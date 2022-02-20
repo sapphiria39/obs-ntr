@@ -16,13 +16,20 @@
 /debug32/
 /debug64/
 /builds/
+/CMakeFiles/
 *.o.d
 *.ninja
 .ninja*
 .dirstamp
+cmake_install.cmake
+CMakeCache.txt
+install_manifest.txt
 
 #xcode
 *.xcodeproj/
+
+#vscode
+.vscode/
 
 #other stuff (windows stuff, qt moc stuff, etc)
 Release_MD/

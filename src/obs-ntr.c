@@ -1,3 +1,4 @@
+#ifdef _WIN32
 #include <obs-module.h>
 #include <util/dstr.h>
 #include <util/platform.h>
@@ -6,6 +7,25 @@
 #include <turbojpeg.h>
 
 #include <WinSock2.h>
+#else
+#include <obs/obs-module.h>
+#include <obs/util/dstr.h>
+#include <obs/util/platform.h>
+#include <obs/util/threading.h>
+
+#include <turbojpeg.h>
+
+#include <unistd.h>
+#include <strings.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+
+#define SOCKET int
+#define INVALID_SOCKET -1
+#define closesocket close
+#endif
 
 // Extracted from ns.h in the NTR source.
 enum ntr_command_type
@@ -149,7 +169,11 @@ void *obs_ntr_startup_remoteview_thread_run(void *data)
 
 	struct sockaddr_in server_address;
 	server_address.sin_family = AF_INET;
+	#ifdef _WIN32
 	server_address.sin_addr.s_addr = inet_addr(context->connection_setup.ip_address.array);
+	#else
+	bcopy(context->connection_setup.ip_address.array, &server_address.sin_addr.s_addr, context->connection_setup.ip_address.len);
+	#endif
 	server_address.sin_port = htons(8000);
 
 
